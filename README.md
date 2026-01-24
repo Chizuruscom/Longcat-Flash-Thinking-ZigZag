@@ -243,6 +243,8 @@ print(tokenizer.decode(output_ids, skip_special_tokens=True).strip("\n"))
 
 We are preparing basic adaptations (involving necessary kernels) in both SGLang and vLLM to support the deployment of LongCat-Flash-Thinking-ZigZag. Please stay tuned : )
 
+P.S. a reference streaming sparse attention prefill kernel in tilelang has been made available in [modeling_longcat.py](https://huggingface.co/meituan-longcat/LongCat-Flash-Thinking-ZigZag/blob/main/modeling_longcat.py#L504).
+
 ## Chat Website
 
 You can chat with LongCat-Flash-Thinking-2601 on our official website: [https://longcat.ai](https://longcat.ai).
