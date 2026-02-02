@@ -211,7 +211,7 @@ This example demonstrates how the template handles conversational history and th
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model_name = "meituan-longcat/LongCat-Flash-Thinking-2601"
+model_name = "meituan-longcat/LongCat-Flash-Thinking-ZigZag"
 
 # Load the tokenizer and the model
 tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -306,9 +306,38 @@ print(tokenizer.decode(output_ids, skip_special_tokens=True).strip("\n"))
 
 ## Deployment
 
-We are preparing basic adaptations (involving necessary kernels) in both SGLang and vLLM to support the deployment of LongCat-Flash-Thinking-ZigZag. Please stay tuned : )
+We have implemented basic adaptations in SGLang ([PR](https://github.com/sgl-project/sglang/pull/18031)) to support the deployment of LongCat-Flash-Thinking-ZigZag.
 
 P.S. a reference streaming sparse attention prefill kernel in tilelang has been made available in [modeling_longcat.py](https://huggingface.co/meituan-longcat/LongCat-Flash-Thinking-ZigZag/blob/main/modeling_longcat.py#L504).
+
+### Single-Node
+
+```bash
+python3 -m sglang.launch_server \
+    --model meituan-longcat/LongCat-Flash-Thinking-ZigZag \
+    --trust-remote-code \
+    --attention-backend zigzag_attn \
+    --enable-ep-moe \
+    --tp 8
+```
+
+### Multi-Node
+
+```bash
+python3 -m sglang.launch_server \
+    --model meituan-longcat/LongCat-Flash-Thinking-ZigZag \
+    --trust-remote-code \
+    --attention-backend zigzag_attn \
+    --enable-ep-moe \
+    --tp 16 \
+    --nnodes 2 \
+    --node-rank $NODE_RANK \
+    --dist-init-addr $MASTER_IP:5000
+```
+
+> [!Note]
+> Replace $NODE_RANK and $MASTER_IP with the specific values for your cluster.
+
 
 ## Chat Website
 
